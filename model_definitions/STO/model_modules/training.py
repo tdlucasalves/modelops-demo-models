@@ -4,13 +4,13 @@ from sklearn.pipeline import Pipeline
 from xgboost import XGBClassifier
 from sklearn.preprocessing import MinMaxScaler
 from collections import OrderedDict
-from aoa import ModelContext
-from aoa.util import (
+from tmo import (
+    ModelContext,
     save_metadata,
     cleanup_cli,
     check_sto_version,
     collect_sto_versions,
-    aoa_create_context,
+    tmo_create_context,
 )
 
 import numpy as np
@@ -21,7 +21,7 @@ import dill
 
 def train(context: ModelContext, **kwargs):
 
-    aoa_create_context()
+    tmo_create_context()
 
     model_version = context.model_version
     hyperparams = context.hyperparams
@@ -90,11 +90,11 @@ def train(context: ModelContext, **kwargs):
     model_df = train_df.map_partition(lambda partition: train_partition_model(partition, model_version, hyperparams),
                                       data_partition_column="partition_id",
                                       returns=OrderedDict(
-        [('partition_id', VARCHAR(255)),
-         ('model_version', VARCHAR(255)),
-         ('num_rows', INTEGER()),
-         ('partition_metadata', CLOB()),
-         ('model_artefact', CLOB())]))
+                                          [('partition_id', VARCHAR(255)),
+                                           ('model_version', VARCHAR(255)),
+                                           ('num_rows', INTEGER()),
+                                           ('partition_metadata', CLOB()),
+                                           ('model_artefact', CLOB())]))
 
     model_df.to_sql(model_artefacts_table, if_exists="replace")
     model_df = DataFrame(

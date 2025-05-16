@@ -4,11 +4,11 @@ from sklearn import metrics
 from collections import OrderedDict
 from aoa import ModelContext
 from .util import get_df_with_model
-from aoa.util import (
+from tmo import (
     save_metadata,
     check_sto_version,
     save_evaluation_metrics,
-    aoa_create_context
+    tmo_create_context
 )
 
 import numpy as np
@@ -19,7 +19,7 @@ import dill
 
 def evaluate(context: ModelContext, **kwargs):
 
-    aoa_create_context()
+    tmo_create_context()
 
     model_version = context.model_version
     model_table = "vmo_sto_models"

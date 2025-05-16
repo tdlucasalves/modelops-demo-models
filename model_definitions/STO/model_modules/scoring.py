@@ -2,9 +2,9 @@ from teradataml import DataFrame
 from teradatasqlalchemy.types import INTEGER
 from collections import OrderedDict
 from .util import get_df_with_model
-from aoa.util import (
+from tmo import (
     check_sto_version,
-    aoa_create_context,
+    tmo_create_context,
     ModelContext,
     execute_sql
 )
@@ -15,7 +15,7 @@ import dill
 
 def score(context: ModelContext, **kwargs):
 
-    aoa_create_context()
+    tmo_create_context()
 
     model_version = context.model_version
     model_table = "vmo_sto_models"
