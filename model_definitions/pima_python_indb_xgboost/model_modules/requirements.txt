@@ -1,6 +1,5 @@
-teradatamodelops==7.1.5
-teradataml==17.20.0.7
-PyYAML==6.0.1
-scikit-learn==1.3.0
-matplotlib==3.9.0
-numpy==1.26.4
+teradatamodelops==7.1.8rc2
+PyYAML==6.0.2
+scikit-learn==1.5.0
+matplotlib==3.10.3
+numpy==2.2.6

@@ -2,10 +2,10 @@ from sklearn import metrics
 from sklearn.metrics import ConfusionMatrixDisplay
 from sklearn.metrics import RocCurveDisplay
 from teradataml import DataFrame, copy_to_sql
-from aoa import (
+from tmo import (
     record_evaluation_stats,
     save_plot,
-    aoa_create_context,
+    tmo_create_context,
     ModelContext
 )
 
@@ -17,7 +17,7 @@ import pandas as pd
 
 def evaluate(context: ModelContext, **kwargs):
 
-    aoa_create_context()
+    tmo_create_context()
 
     model = joblib.load(f"{context.artifact_input_path}/model.joblib")
 

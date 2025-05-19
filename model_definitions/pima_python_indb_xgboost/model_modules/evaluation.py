@@ -8,9 +8,9 @@ from teradataml import (
     ClassificationEvaluator,
     ROC
 )
-from aoa import (
+from tmo import (
     record_evaluation_stats,
-    aoa_create_context,
+    tmo_create_context,
     ModelContext
 )
 
@@ -85,7 +85,7 @@ def plot_roc_curve(roc_out, img_filename):
 
 def evaluate(context: ModelContext, **kwargs):
 
-    aoa_create_context()
+    tmo_create_context()
 
     print(f"Loading model from table model_{context.model_version}")
     model = DataFrame(f"model_{context.model_version}")

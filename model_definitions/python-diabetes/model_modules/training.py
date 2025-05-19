@@ -3,10 +3,10 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.pipeline import Pipeline
 from nyoka import xgboost_to_pmml
 from teradataml import DataFrame
-from aoa import (
+from tmo import (
     record_training_stats,
     save_plot,
-    aoa_create_context,
+    tmo_create_context,
     ModelContext
 )
 
@@ -14,7 +14,7 @@ import joblib
 
 
 def train(context: ModelContext, **kwargs):
-    aoa_create_context()
+    tmo_create_context()
 
     feature_names = context.dataset_info.feature_names
     target_name = context.dataset_info.target_names[0]

@@ -5,15 +5,14 @@ from teradataml import (
     ScaleTransform,
 )
 
-from aoa import (
+from tmo import (
     record_training_stats,
-    aoa_create_context,
+    tmo_create_context,
     ModelContext
 )
 
 import matplotlib.pyplot as plt
 import pandas as pd
-import numpy as np
 import json
 from collections import Counter
 
@@ -48,7 +47,7 @@ def plot_feature_importance(fi, img_filename):
 
 
 def train(context: ModelContext, **kwargs):
-    aoa_create_context()
+    tmo_create_context()
 
     feature_names = context.dataset_info.feature_names
     target_name = context.dataset_info.target_names[0]

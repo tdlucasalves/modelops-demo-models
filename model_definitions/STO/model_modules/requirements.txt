@@ -1,4 +1,4 @@
-dill==0.4.0
+teradatamodelops==7.1.8rc2
+dill==0.3.8
 xgboost==1.7.6
 scikit-learn==1.5.0
-teradatamodelops==7.1.8rc2

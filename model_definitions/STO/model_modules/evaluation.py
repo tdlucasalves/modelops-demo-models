@@ -2,9 +2,9 @@ from teradataml import DataFrame
 from teradatasqlalchemy.types import INTEGER, VARCHAR, CLOB
 from sklearn import metrics
 from collections import OrderedDict
-from aoa import ModelContext
 from .util import get_df_with_model
 from tmo import (
+    ModelContext,
     save_metadata,
     check_sto_version,
     save_evaluation_metrics,
@@ -22,7 +22,7 @@ def evaluate(context: ModelContext, **kwargs):
     tmo_create_context()
 
     model_version = context.model_version
-    model_table = "vmo_sto_models"
+    model_table = "vmo_sto_partitions"
 
     check_sto_version()
 
@@ -45,8 +45,7 @@ def evaluate(context: ModelContext, **kwargs):
         model_artefact = rows.loc[rows['n_row'] == 1, 'model'].iloc[0]
         model = dill.loads(base64.b64decode(model_artefact))
 
-        X_test = rows[["NumTimesPrg", "Age", "PlGlcConc", "BloodP",
-                       "SkinThick", "TwoHourSerIns", "BMI", "DiPedFunc"]]
+        X_test = rows[["NumTimesPrg", "Age", "PlGlcConc", "BloodP", "SkinThick", "TwoHourSerIns", "BMI", "DiPedFunc"]]
         y_test = rows[["HasDiabetes"]]
 
         y_pred = model.predict(X_test)
@@ -65,14 +64,14 @@ def evaluate(context: ModelContext, **kwargs):
 
         # now return a single row for this partition with the evaluation results
         # (schema/order must match returns argument in map_partition)
-        return np.array([[partition_id,
+        return np.array([partition_id,
                           rows.shape[0],
-                          partition_metadata]])
+                          partition_metadata])
 
     number_of_amps = 2
     pdf = df.assign(partition_id=df.PatientId % number_of_amps)
-    partitioned_dataset_table = "partitioned_dataset"
-    pdf.to_sql(partitioned_dataset_table, if_exists='replace', temporary=True)
+    partitioned_dataset_table = f"partitioned_dataset_{model_version}"
+    pdf.to_sql(partitioned_dataset_table, if_exists='replace', temporary=(False if model_version == "cli" else True))
 
     df_with_model = get_df_with_model(
         partitioned_dataset_table, model_table, model_version)
@@ -80,13 +79,14 @@ def evaluate(context: ModelContext, **kwargs):
     eval_df = df_with_model.map_partition(lambda partition: eval_partition(partition),
                                           data_partition_column="partition_id",
                                           returns=OrderedDict(
-        [('partition_id', VARCHAR(255)),
-         ('num_rows', INTEGER()),
-         ('partition_metadata', CLOB())]))
+                                              [('partition_id', VARCHAR(255)),
+                                               ('num_rows', INTEGER()),
+                                               ('partition_metadata', CLOB())]))
 
     # persist to temporary table for computing global metrics
-    eval_df.to_sql("sto_eval_results", if_exists="replace", temporary=True)
-    eval_df = DataFrame("sto_eval_results")
+    evaluation_results = f"vmo_sto_eval_results_{model_version}"
+    eval_df.to_sql(evaluation_results, if_exists="replace", temporary=(False if model_version == "cli" else True))
+    eval_df = DataFrame(evaluation_results)
 
     save_metadata(eval_df)
     save_evaluation_metrics(eval_df, ["MAE", "MSE", "R2"])

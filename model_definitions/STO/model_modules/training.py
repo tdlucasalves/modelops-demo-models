@@ -25,14 +25,9 @@ def train(context: ModelContext, **kwargs):
 
     model_version = context.model_version
     hyperparams = context.hyperparams
-    model_artefacts_table = "vmo_sto_models"
+    model_artefacts_table = "vmo_sto_partitions"
 
     check_sto_version()
-
-    try:
-        cleanup_cli(model_version)
-    except:
-        print("Something went wrong trying to cleanup cli model version, maybe it's nothing")
 
     # select the training datast via the fold_id
     df = DataFrame.from_query(context.dataset_info.sql)
@@ -52,12 +47,10 @@ def train(context: ModelContext, **kwargs):
         if rows is None or len(rows) == 0:
             return None
 
-        x = rows[["NumTimesPrg", "Age", "PlGlcConc", "BloodP",
-                  "SkinThick", "TwoHourSerIns", "BMI", "DiPedFunc"]]
+        x = rows[["NumTimesPrg", "Age", "PlGlcConc", "BloodP", "SkinThick", "TwoHourSerIns", "BMI", "DiPedFunc"]]
         y = rows[["HasDiabetes"]]
 
-        model = Pipeline([('scaler', MinMaxScaler()),
-                          ('xgb', XGBClassifier(eta=hyperparams["eta"], max_depth=hyperparams["max_depth"]))])
+        model = Pipeline([('scaler', MinMaxScaler()), ('xgb', XGBClassifier(eta=hyperparams["eta"], max_depth=hyperparams["max_depth"]))])
 
         model.fit(x, y)
 
@@ -71,21 +64,21 @@ def train(context: ModelContext, **kwargs):
         # we have to convert the model to base64 to store in a CLOB column (can't use BLOB with STOs)
         artefact = base64.b64encode(dill.dumps(model))
 
-        # here we return 1 row per partition - basically, the trained model for that partitiom
-        return np.array([[partition_id,
-                          model_version,
-                          rows.shape[0],
-                          partition_metadata,
-                          artefact]])
+        # here we return 1 row per partition - basically, the trained model for that partition
+        return np.array([partition_id,
+                         model_version,
+                         rows.shape[0],
+                         partition_metadata,
+                         artefact])
 
     print("Starting training...")
 
     number_of_amps = 2
     pdf = df.assign(partition_id=df.PatientId % number_of_amps)
-    partitioned_dataset_table = "partitioned_dataset"
-    pdf.to_sql(partitioned_dataset_table, if_exists='replace', temporary=True)
+    partitioned_dataset_table = f"partitioned_dataset_{model_version}"
+    pdf.to_sql(partitioned_dataset_table, if_exists='replace', temporary=(False if model_version == "cli" else True))
 
-    train_df = DataFrame('partitioned_dataset')
+    train_df = DataFrame(partitioned_dataset_table)
 
     model_df = train_df.map_partition(lambda partition: train_partition_model(partition, model_version, hyperparams),
                                       data_partition_column="partition_id",

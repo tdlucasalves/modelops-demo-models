@@ -4,9 +4,9 @@ from teradataml import (
     XGBoostPredict,
     ScaleTransform
 )
-from aoa import (
+from tmo import (
     record_scoring_stats,
-    aoa_create_context,
+    tmo_create_context,
     ModelContext
 )
 import pandas as pd
@@ -14,7 +14,7 @@ import pandas as pd
 
 def score(context: ModelContext, **kwargs):
 
-    aoa_create_context()
+    tmo_create_context()
 
     print(f"Loading model from table model_{context.model_version}")
     model = DataFrame(f"model_{context.model_version}")
