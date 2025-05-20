@@ -13,7 +13,9 @@ from tmo import (
     tmo_create_context,
     ModelContext
 )
+from collections import Counter
 
+import matplotlib.pyplot as plt
 import json
 import pandas as pd
 import os
@@ -39,8 +41,6 @@ def compute_feature_importance(trees_json):
 
 
 def plot_feature_importance(fi, img_filename):
-    import pandas as pd
-    import matplotlib.pyplot as plt
     feat_importances = pd.Series(fi)
     feat_importances.nlargest(10).plot(
         kind='barh').set_title('Feature Importance')
@@ -50,7 +50,6 @@ def plot_feature_importance(fi, img_filename):
 
 
 def plot_confusion_matrix(cf, img_filename):
-    import matplotlib.pyplot as plt
     fig, ax = plt.subplots(figsize=(7.5, 7.5))
     ax.matshow(cf, cmap=plt.cm.Blues, alpha=0.3)
     for i in range(cf.shape[0]):
@@ -66,7 +65,6 @@ def plot_confusion_matrix(cf, img_filename):
 
 
 def plot_roc_curve(roc_out, img_filename):
-    import matplotlib.pyplot as plt
     auc = roc_out.result.to_pandas().reset_index()['AUC'][0]
     roc_results = roc_out.output_data.to_pandas()
     plt.plot(roc_results['fpr'], roc_results['tpr'],

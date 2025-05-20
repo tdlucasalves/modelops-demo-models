@@ -5,9 +5,9 @@ from teradataml import (
     PMMLPredict,
     configure
 )
-from aoa import (
+from tmo import (
     record_evaluation_stats,
-    aoa_create_context,
+    tmo_create_context,
     store_byom_tmp,
     ModelContext
 )
@@ -40,7 +40,7 @@ def plot_confusion_matrix(cf, img_filename):
 
 
 def evaluate(context: ModelContext, **kwargs):
-    aoa_create_context()
+    tmo_create_context()
 
     
     # this evaluation.py can hanlde both onnx and pmml. usually, you would only need to support one but for 

@@ -10,11 +10,11 @@ from tmo import (
     tmo_create_context,
     ModelContext
 )
+from collections import Counter
 
 import matplotlib.pyplot as plt
 import pandas as pd
 import json
-from collections import Counter
 
 
 def traverse_tree(tree, feature_counter):

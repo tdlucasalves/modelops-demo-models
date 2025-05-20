@@ -1,10 +1,10 @@
 # xgboost and scikit-learn versions are pinned to the latest supported by Nyoka
 xgboost==1.7.6
-scikit-learn==1.5.0
+scikit-learn==1.6.1
 shap==0.47.2
 matplotlib==3.10.3
 nyoka==5.5.0
-teradatamodelops==7.1.8rc3
+teradatamodelops==7.1.8
 numpy==2.2.6
 # bump transient versions to fix vulnerabilities
 tqdm==4.66.3

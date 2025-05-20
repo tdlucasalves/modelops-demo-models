@@ -1,5 +1,5 @@
 from teradataml import DataFrame, copy_to_sql
-from aoa import (aoa_create_context, ModelContext)
+from tmo import (tmo_create_context, ModelContext)
 import pandas as pd
 import numpy as np
 
