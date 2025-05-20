@@ -5,6 +5,6 @@ shap==0.47.2
 matplotlib==3.10.3
 nyoka==5.5.0
 teradatamodelops==7.1.8
-numpy==2.2.6
+numpy==1.26.4
 # bump transient versions to fix vulnerabilities
 tqdm==4.66.3
