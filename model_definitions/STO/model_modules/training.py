@@ -73,7 +73,7 @@ def train(context: ModelContext, **kwargs):
 
     print("Starting training...")
 
-    number_of_amps = 2
+    number_of_amps = hyperparams["number_of_amps"]
     pdf = df.assign(partition_id=df.PatientId % number_of_amps)
     partitioned_dataset_table = f"partitioned_dataset_{model_version.split('-')[0]}"
     pdf.to_sql(partitioned_dataset_table, if_exists='replace', temporary=(False if model_version == "cli" else True))

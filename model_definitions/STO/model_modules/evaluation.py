@@ -22,6 +22,7 @@ def evaluate(context: ModelContext, **kwargs):
     tmo_create_context()
 
     model_version = context.model_version
+    number_of_amps = context.hyperparams["number_of_amps"]
     model_table = "vmo_sto_partitions"
 
     check_sto_version()
@@ -68,7 +69,6 @@ def evaluate(context: ModelContext, **kwargs):
                           rows.shape[0],
                           partition_metadata])
 
-    number_of_amps = 2
     pdf = df.assign(partition_id=df.PatientId % number_of_amps)
     partitioned_dataset_table = f"partitioned_dataset_{model_version.split('-')[0]}"
     pdf.to_sql(partitioned_dataset_table, if_exists='replace', temporary=(False if model_version == "cli" else True))
