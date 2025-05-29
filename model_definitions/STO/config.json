@@ -2,6 +2,6 @@
 	"hyperParameters": {
 		"eta": 0.2,
 		"max_depth": 6,
-		"num_partitions": 2
+		"number_of_amps": 2
 	}
 }
