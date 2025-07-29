@@ -1,7 +1,7 @@
 from teradataml import copy_to_sql, DataFrame
-from aoa import (
+from tmo import (
     record_scoring_stats,
-    aoa_create_context,
+    tmo_create_context,
     ModelContext
 )
 
@@ -11,7 +11,7 @@ import pandas as pd
 
 def score(context: ModelContext, **kwargs):
 
-    aoa_create_context()
+    tmo_create_context()
 
     model = joblib.load(f"{context.artifact_input_path}/model.joblib")
 
